@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react"
 
+import { Link } from "react-router-dom"
+
+import api from "../../services/api"
+
 import MenuFuncionario from "../MenuFuncionario/MenuFuncionario"
 
 const ListarProduto = () => {
@@ -29,10 +33,24 @@ const ListarProduto = () => {
     // aparecer na tela pela primeira vez
     // Resumindo [] : Execute isso quando a página carregar e depois "ignore", não importa o que mude na tela!
 
-    useEffect(() => { }, [])
+    useEffect(() => { 
+
+        api
+            .get("/produtos")
+            .then((response)=>{
+                // deu certo :)
+                console.log(response.data.data)
+                setProdutos(response.data.data)
+            })
+            .catch((error)=>{
+                // deu ruim :(
+                console.error("Error ao buscar a lista de produtos. ", error)
+            })
+    }, [])
 
     // Lista "provisória" -> Próximo passo (fora deste material) é substituir por dados vindos da API Rest
     // utilizando o useEffect + setProdutos acima.
+    /*
     const arrayProdutos = [
         {
             id: 1,
@@ -53,6 +71,7 @@ const ListarProduto = () => {
             descricao: "Pizza de frango com catupiry"
         }
     ]
+    */  
 
     return (
         <div className="container">
@@ -70,7 +89,7 @@ const ListarProduto = () => {
                     </thead>
                     <tbody>
 
-                        {arrayProdutos.map((produto) => (
+                        {produtos.map((produto) => (
                             <tr key={produto.id}>
                                 <td style={{ fontSize: "13px" }}>{produto.nome}</td>
                                 <td style={{ fontSize: "13px" }}>
@@ -101,6 +120,16 @@ const ListarProduto = () => {
 
                     </tbody>
                 </table>
+            </div>
+
+            <div className="text-end mt-3">
+                <Link
+                to="/produtos/novo"
+                className={`btn btn-success`}
+                >
+                    <i className="fas fa-plus"></i>
+                    Novo Produto
+                    </Link>
             </div>
 
         </div>
